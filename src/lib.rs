@@ -1,9 +1,9 @@
-//use sha3::{Digest, Sha3_256};
+use sha3::{Digest, Sha3_256};
 
 #[cfg(test)]
 mod tests {
     use hex_literal::hex;
-    use sha3::{Digest, Sha3_256};
+    use crate::{Digest, Sha3_256};
     #[test]
     fn basic_sha256() {
         let mut hasher = Sha3_256::new();
