@@ -5,6 +5,7 @@ use std::fs;
 #[derive(Debug, Clone, Copy)]
 enum NodeType {
     Directory,
+    DirSeparator,
     File,
     Symlink,
 }
@@ -13,8 +14,9 @@ impl NodeType {
     pub fn to_u8(&self) -> u8 {
         match self {
             NodeType::Directory => 2,
-            NodeType::File => 3,
-            NodeType::Symlink => 5,
+            NodeType::DirSeparator => 3,
+            NodeType::File => 5,
+            NodeType::Symlink => 7,
         }
     }
 }
