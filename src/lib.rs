@@ -1,4 +1,4 @@
-use jwalk::WalkDir;
+use walkdir::WalkDir;
 use sha3::{Digest, Sha3_256};
 use std::fs;
 
