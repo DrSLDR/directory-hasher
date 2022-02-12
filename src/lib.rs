@@ -94,10 +94,15 @@ mod tests {
 
     #[test]
     fn hash_test_data_one() {
+        // one.test content: 70a6aca18845bc8c0c10ff7fe560834ac3ef66b924ec9dda5cf3a7a6a8c2c238
+        // one.test name:    8d80e5830940407463f61fe1ef751de17cb095f8646ff71a72b1374efe5d84c5
+        // one.test node:    e92689c136f972aefd04d4349866474b1d909bcb6766fcc70b0a5cd6340a2938
+        // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
+        // one node:         3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c
         let result = crate::hash_directory("test_data/one");
         assert_eq!(
             result[..],
-            hex!("40f97a3ba6ffd2d2eb95a65eb5c1de7ecf92119d0c9813362320e6a999a60c09")
+            hex!("3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c")
         )
     }
 }
