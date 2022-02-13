@@ -180,15 +180,15 @@ mod tests {
 
     #[test]
     fn hash_test_data_one() {
-        // one.test content: 70a6aca18845bc8c0c10ff7fe560834ac3ef66b924ec9dda5cf3a7a6a8c2c238
+        // one.test content: 9241024260f87e2b901ed6972c48a17c4dc71e0939b0dd445f431f9cf406ca3a
         // one.test name:    8d80e5830940407463f61fe1ef751de17cb095f8646ff71a72b1374efe5d84c5
-        // one.test node:    e92689c136f972aefd04d4349866474b1d909bcb6766fcc70b0a5cd6340a2938
+        // one.test node:    7716a22d94ecef97998c296ec7914ee0f6bcd66d8b37ac82688b4a3a4ba0a0ca
         // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
-        // one node:         3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c
+        // one node:         16cd35aa0c5589a77ed9144ffb9fbab4804cb59583259c4c4772bf5f2b7d9923
         let result = crate::hash_directory("test_data/one").unwrap();
         assert_eq!(
             result[..],
-            hex!("3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c")
+            hex!("16cd35aa0c5589a77ed9144ffb9fbab4804cb59583259c4c4772bf5f2b7d9923")
         )
     }
 }
