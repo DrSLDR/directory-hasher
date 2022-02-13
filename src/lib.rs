@@ -137,30 +137,28 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
             Err(_) => continue,
         };
 
-        let content = hash_content(&entry)?;
-        let name = Sha3_256::new()
-            .chain_update(entry.file_name().to_string_lossy().as_bytes())
-            .finalize();
+        println!("{}", entry.path().display());
 
-        println!("content: {:?}", match &content {
-            crate::ContentResult::File(v) => hex::encode(&v),
-            crate::ContentResult::Directory => "Directory".to_string()
-        });
+        let content = hash_content(&entry)?;
+        let name = Vec::from(
+            Sha3_256::new()
+                .chain_update(entry.file_name().to_string_lossy().as_bytes())
+                .finalize()
+                .as_slice(),
+        );
+
+        println!(
+            "content: {:?}",
+            match &content {
+                crate::ContentResult::File(v) => hex::encode(&v),
+                crate::ContentResult::Directory => "Directory".to_string(),
+            }
+        );
         println!("name: {:?}", hex::encode(&name));
 
         let node = match content {
-            crate::ContentResult::File(content) => {
-                Vec::from(
-                    Sha3_256::new().chain_update(name).chain_update(
-                        if entry.file_type().is_symlink() {
-                            [NodeType::Symlink.to_u8()]
-                        } else {
-                            [NodeType::File.to_u8()]
-                        }
-                    ).chain_update(content).finalize().as_slice()
-                )
-            },
-            crate::ContentResult::Directory => todo!("Directory handling"),
+            crate::ContentResult::File(content) => node_file_hash(&entry, name, content),
+            crate::ContentResult::Directory => node_dir_hash(&mut cache_map, &entry, name),
         };
 
         println!("node: {:?}", hex::encode(&node));
