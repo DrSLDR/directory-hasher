@@ -1,4 +1,5 @@
 use sha3::{Digest, Sha3_256};
+use std::collections::{HashMap, VecDeque};
 use std::fmt;
 use std::fs;
 use walkdir::{DirEntry, WalkDir};
@@ -107,6 +108,22 @@ impl From<std::io::Error> for ContentError {
 /// hash(hash(name) + byte + hash(path))
 /// ```
 pub fn hash_directory(path: &str) -> &[u8] {
+    let mut last_depth: usize = 0;
+    let mut cache_map: HashMap<u32, VecDeque<&[u8]>> = HashMap::new();
+
+    for entry in WalkDir::new(&path).sort_by_file_name().contents_first(true) {
+        let entry = match entry {
+            Ok(v) => v,
+            Err(_) => continue,
+        };
+
+        let content_h = hash_content(&entry);
+        let name_h = Sha3_256::new()
+            .chain_update(entry.file_name().to_string_lossy().as_bytes())
+            .finalize();
+
+        last_depth = entry.depth();
+    }
     &[]
 }
 
