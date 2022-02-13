@@ -50,18 +50,18 @@ enum ContentResult {
     Directory,
 }
 
-/// Defines the error states of [`hash_content`]
+/// Defines the error states arising from hashing the content of a node
 #[derive(Debug)]
-enum ContentError {
+pub enum ContentError {
     UnknownNodeType,
     IOError(std::io::Error),
 }
 
 impl fmt::Display for ContentError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            UnknownNodeType => write!(f, "Node is not a directory, file, or symlink"),
-            IOError => write!(f, "Encountered a problem opening a node"),
+        match self {
+            ContentError::UnknownNodeType => write!(f, "Node is not a directory, file, or symlink"),
+            ContentError::IOError(_) => write!(f, "Encountered a problem opening a node"),
         }
     }
 }
@@ -89,7 +89,6 @@ impl From<ContentError> for HashError {
         Self::ContentError(err)
     }
 }
-
 
 /// Given a path to a directory, as a [`&str`], computes the directory hash and returns
 /// it as a byte array.
@@ -136,7 +135,7 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
             Err(_) => continue,
         };
 
-        let content_h = hash_content(&entry);
+        let content_h = hash_content(&entry)?;
         let name_h = Sha3_256::new()
             .chain_update(entry.file_name().to_string_lossy().as_bytes())
             .finalize();
