@@ -138,12 +138,46 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
             Err(_) => continue,
         };
 
-        let content_h = hash_content(&entry)?;
-        let name_h = Sha3_256::new()
+        let content = hash_content(&entry)?;
+        let name = Sha3_256::new()
             .chain_update(entry.file_name().to_string_lossy().as_bytes())
             .finalize();
 
+        println!("content: {:?}", match &content {
+            crate::ContentResult::File(v) => hex::encode(&v),
+            crate::ContentResult::Directory => "Directory".to_string()
+        });
+        println!("name: {:?}", hex::encode(&name));
+
+        let node = match content {
+            crate::ContentResult::File(content) => {
+                Vec::from(
+                    Sha3_256::new().chain_update(name).chain_update(
+                        if entry.file_type().is_symlink() {
+                            [NodeType::Symlink.to_u8()]
+                        } else {
+                            [NodeType::File.to_u8()]
+                        }
+                    ).chain_update(content).finalize().as_slice()
+                )
+            },
+            crate::ContentResult::Directory => todo!("Directory handling"),
+        };
+
+        println!("node: {:?}", hex::encode(&node));
+
+        match cache_map.get_mut(&entry.depth()) {
+            Some(q) => q.push_back(node),
+            None => {
+                let mut q: VecDeque<Vec<u8>> = VecDeque::new();
+                q.push_back(node);
+                cache_map.insert(entry.depth(), q);
+            }
+        }
+
         last_depth = entry.depth();
+        println!("depth: {:?}", last_depth);
+        println!("map: {:?}", cache_map);
     }
     Ok(vec![])
 }
