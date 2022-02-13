@@ -185,7 +185,7 @@ mod tests {
         // one.test node:    e92689c136f972aefd04d4349866474b1d909bcb6766fcc70b0a5cd6340a2938
         // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
         // one node:         3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c
-        let result = crate::hash_directory("test_data/one");
+        let result = crate::hash_directory("test_data/one").unwrap();
         assert_eq!(
             result[..],
             hex!("3945b42603c6370da672d65a4ac086e3ea9748b1788b9cd18eadeb497277de9c")
