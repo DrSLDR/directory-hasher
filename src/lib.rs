@@ -4,6 +4,9 @@ use std::fmt;
 use std::fs;
 use walkdir::{DirEntry, WalkDir};
 
+#[cfg(debug_assertions)]
+use hex::encode;
+
 /// Defines the different types of nodes the directory walk can encounter. These types
 /// define, through the `to_u8` implementation, the byte that will be inserted between a
 /// node's name and content hash.
