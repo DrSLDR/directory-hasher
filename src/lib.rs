@@ -98,9 +98,7 @@ impl From<ContentError> for HashError {
 ///
 /// # Examples
 ///
-/// ```
-/// no, none of those
-/// ```
+/// no
 ///
 /// # Scheme
 ///
@@ -113,21 +111,16 @@ impl From<ContentError> for HashError {
 /// directory can be returned.
 ///
 /// For normal **files**, the node hash is simply:
-/// ```
-/// hash(hash(name) + byte + hash(content))
-/// ```
+/// `hash(hash(name) + byte + hash(content))`
 ///
 /// For **directories**, the node hash includes arbitrarily many content hashes, one per
 /// sub-node:
-/// ```
-/// hash(hash(name) + byte + hash(content_1) + byte + hash(content_2) + ... + byte + hash(content_n))
-/// ```
+/// `hash(hash(name) + byte + hash(content_1) + byte + hash(content_2) + ... + byte +
+/// hash(content_n))`
 ///
 /// Finally, for **symlinks**, the link isn't followed. Instead, the content hash is the
 /// hash of the path to the file the link points to.
-/// ```
-/// hash(hash(name) + byte + hash(path))
-/// ```
+/// `hash(hash(name) + byte + hash(path))`
 pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
     let mut cache_map: HashMap<usize, VecDeque<Vec<u8>>> = HashMap::new();
 
