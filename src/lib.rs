@@ -130,7 +130,7 @@ impl From<ContentError> for HashError {
 /// ```
 pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
     let mut last_depth: usize = 0;
-    let mut cache_map: HashMap<usize, VecDeque<&[u8]>> = HashMap::new();
+    let mut cache_map: HashMap<usize, VecDeque<Vec<u8>>> = HashMap::new();
 
     for entry in WalkDir::new(&path).sort_by_file_name().contents_first(true) {
         let entry = match entry {
