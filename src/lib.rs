@@ -200,6 +200,22 @@ fn hash_content(entry: &DirEntry) -> Result<ContentResult, ContentError> {
     }
 }
 
+/// Generates the node hash of a given File node
+fn node_file_hash(entry: &DirEntry, name: Vec<u8>, content: Vec<u8>) -> Vec<u8> {
+    Vec::from(
+        Sha3_256::new()
+            .chain_update(name)
+            .chain_update(if entry.file_type().is_symlink() {
+                [NodeType::Symlink.to_u8()]
+            } else {
+                [NodeType::File.to_u8()]
+            })
+            .chain_update(content)
+            .finalize()
+            .as_slice(),
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{Digest, Sha3_256};
