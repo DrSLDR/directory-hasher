@@ -129,7 +129,6 @@ impl From<ContentError> for HashError {
 /// hash(hash(name) + byte + hash(path))
 /// ```
 pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
-    let mut last_depth: usize;
     let mut cache_map: HashMap<usize, VecDeque<Vec<u8>>> = HashMap::new();
 
     for entry in WalkDir::new(&path).sort_by_file_name().contents_first(true) {
@@ -175,8 +174,6 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
             }
         }
 
-        last_depth = entry.depth();
-        println!("depth: {:?}", last_depth);
         println!("map: {:?}", cache_map);
     }
     Ok(vec![])
