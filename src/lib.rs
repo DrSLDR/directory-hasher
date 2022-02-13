@@ -72,6 +72,25 @@ impl From<std::io::Error> for ContentError {
     }
 }
 
+/// Error types from the [`hash_directory`] function
+#[derive(Debug)]
+pub enum HashError {
+    ContentError(ContentError),
+}
+
+impl fmt::Display for HashError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Hash could not be computed")
+    }
+}
+
+impl From<ContentError> for HashError {
+    fn from(err: ContentError) -> Self {
+        Self::ContentError(err)
+    }
+}
+
+
 /// Given a path to a directory, as a [`&str`], computes the directory hash and returns
 /// it as a byte array.
 ///
@@ -107,7 +126,7 @@ impl From<std::io::Error> for ContentError {
 /// ```
 /// hash(hash(name) + byte + hash(path))
 /// ```
-pub fn hash_directory(path: &str) -> &[u8] {
+pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
     let mut last_depth: usize = 0;
     let mut cache_map: HashMap<u32, VecDeque<&[u8]>> = HashMap::new();
 
@@ -124,7 +143,7 @@ pub fn hash_directory(path: &str) -> &[u8] {
 
         last_depth = entry.depth();
     }
-    &[]
+    Ok(vec![])
 }
 
 /// Given a [`DirEntry`], hashes its contents according to the type of node.
