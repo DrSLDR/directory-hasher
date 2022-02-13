@@ -174,7 +174,8 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
 
         println!("map: {:?}", cache_map);
     }
-    Ok(vec![])
+
+    Ok(cache_map.get_mut(&0).unwrap().pop_front().unwrap())
 }
 
 /// Given a [`DirEntry`], hashes its contents according to the type of node.
