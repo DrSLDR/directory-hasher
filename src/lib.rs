@@ -216,6 +216,29 @@ fn node_file_hash(entry: &DirEntry, name: Vec<u8>, content: Vec<u8>) -> Vec<u8> 
     )
 }
 
+/// Generates the node hash of a given Directory node
+fn node_dir_hash(
+    cache: &mut HashMap<usize, VecDeque<Vec<u8>>>,
+    entry: &DirEntry,
+    name: Vec<u8>,
+) -> Vec<u8> {
+    let mut hasher = Sha3_256::new()
+        .chain_update(name)
+        .chain_update([NodeType::Directory.to_u8()]);
+    let mut first: bool = true;
+    let q = cache.get_mut(&(entry.depth() + 1)).unwrap();
+    for node in q.iter() {
+        if !first {
+            hasher.update([NodeType::DirSeparator.to_u8()]);
+        } else {
+            first = false;
+        }
+        hasher.update(node);
+    }
+    q.clear();
+    Vec::from(hasher.finalize().as_slice())
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{Digest, Sha3_256};
