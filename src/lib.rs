@@ -1,7 +1,6 @@
-use walkdir::WalkDir;
 use sha3::{Digest, Sha3_256};
 use std::fs;
-
+use walkdir::{DirEntry, WalkDir};
 
 /// Defines the different types of nodes the directory walk can encounter. These types
 /// define, through the `to_u8` implementation, the byte that will be inserted between a
@@ -75,6 +74,23 @@ impl NodeType {
 /// ```
 pub fn hash_directory(path: &str) -> &[u8] {
     &[]
+}
+
+fn hash_content(entry: &DirEntry) -> Option<Vec<u8>> {
+    if entry.file_type().is_symlink() {
+        todo!("Symlink content handling is not implemented");
+    } else if entry.file_type().is_dir() {
+        None
+    } else if entry.file_type().is_file() {
+        match fs::read(entry.path()) {
+            Ok(v) => Some(Vec::from(
+                Sha3_256::new().chain_update(v).finalize().as_slice(),
+            )),
+            Err(_) => panic!("Could not read file at {}", entry.path().display()),
+        }
+    } else {
+        panic!("Unknown file type at {}", entry.path().display());
+    }
 }
 
 #[cfg(test)]
