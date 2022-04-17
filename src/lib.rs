@@ -256,4 +256,18 @@ mod tests {
             hex!("9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d")
         )
     }
+
+    #[test]
+    fn hash_test_data_two() {
+        // one.test content: 9241024260f87e2b901ed6972c48a17c4dc71e0939b0dd445f431f9cf406ca3a
+        // one.test name:    8d80e5830940407463f61fe1ef751de17cb095f8646ff71a72b1374efe5d84c5
+        // one.test node:    7716a22d94ecef97998c296ec7914ee0f6bcd66d8b37ac82688b4a3a4ba0a0ca
+        // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
+        // one node:         9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d
+        let result = crate::hash_directory("test_data/two").unwrap();
+        assert_eq!(
+            result[..],
+            hex!("9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d")
+        )
+    }
 }
