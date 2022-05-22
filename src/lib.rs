@@ -262,12 +262,24 @@ mod tests {
         // one.test content: 9241024260f87e2b901ed6972c48a17c4dc71e0939b0dd445f431f9cf406ca3a
         // one.test name:    8d80e5830940407463f61fe1ef751de17cb095f8646ff71a72b1374efe5d84c5
         // one.test node:    7716a22d94ecef97998c296ec7914ee0f6bcd66d8b37ac82688b4a3a4ba0a0ca
-        // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
-        // one node:         9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d
+        // two.test content: f2ee51400cb7890e88835039d97b3411df6d2460843c8e84b3f7541c40eec1ba
+        // two.test name:    af148b4b830b9882103cf3ca767e34a6e4dc52a0b6f08df31a77ae9903d1949d
+        // two.test node:    a6e7380dabe9ba94240a56570ba58dc457e57924ad78bc2476867dcbfd57c8eb
+        // subone name:      55fc1f2b086b1f8bde1078ae015e788ec2766e38f68a19deedc1d4cc1a882a57
+        // subone node:      2c57a0604a04b43168f02b177d6ac0f0205c70c1896a6c0b4eefd870dfe7089d
+        // bacon.test cont:  5d9121bfbe2ccd96c4e2e94e2c0c4a9940fb325f728fd5de26fc3e0f8df37914
+        // bacon.test name:  e176fb76eb3d39d67764c86a91dfb5ff11ce95ae556145bef4112434da0cffcf
+        // bacon.test node:  0ffcbf39480556cf4438cbe5bd18b926d9abecb8f1ea99f75d31f28a84429c8d
+        // two.test(l) cont: 29077be8b7ce3922951fb75ff84cf5aa29edbddd86725ee7b34a4508345b93a5
+        // two.test(l) node: b97f5177d45d1cac7b7b381609684fe2c689f8538bcc92db0a8312a0c6b83185
+        // subtwo name:      996340b04c5f9afc98dc7b81278eff5e796a814c6078101391277461246cc5b7
+        // subtwo node:      fa44844774f5f9e126e5a8d6b3c426b1f8b9af9abf7984371fae9ff4ef57e305
+        // two name:         cad32d6da454536a0412369e78baf227a81309b9579df2f450d1b5f5c8c26bf0
+        // two node:         9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df
         let result = crate::hash_directory("test_data/two").unwrap();
         assert_eq!(
             result[..],
-            hex!("9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d")
+            hex!("9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df")
         )
     }
 }
