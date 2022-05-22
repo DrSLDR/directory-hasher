@@ -174,7 +174,12 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
 /// Given a [`DirEntry`], hashes its contents according to the type of node.
 fn hash_content(entry: &DirEntry) -> Result<ContentResult, ContentError> {
     if entry.file_type().is_symlink() {
-        todo!("Symlink content handling is not implemented");
+        Ok(ContentResult::File(Vec::from(
+            Sha3_256::new()
+                .chain_update(fs::read_link(entry.path())?.to_string_lossy().as_bytes())
+                .finalize()
+                .as_slice(),
+        )))
     } else if entry.file_type().is_dir() {
         Ok(ContentResult::Directory)
     } else if entry.file_type().is_file() {
