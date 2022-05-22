@@ -130,8 +130,6 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
             Err(_) => continue,
         };
 
-        println!("{}", entry.path().display());
-
         let content = hash_content(&entry)?;
         let name = Vec::from(
             Sha3_256::new()
@@ -140,21 +138,10 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
                 .as_slice(),
         );
 
-        println!(
-            "content: {:?}",
-            match &content {
-                crate::ContentResult::File(v) => hex::encode(&v),
-                crate::ContentResult::Directory => "Directory".to_string(),
-            }
-        );
-        println!("name: {:?}", hex::encode(&name));
-
         let node = match content {
             crate::ContentResult::File(content) => node_file_hash(&entry, name, content),
             crate::ContentResult::Directory => node_dir_hash(&mut cache_map, &entry, name),
         };
-
-        println!("node: {:?}", hex::encode(&node));
 
         match cache_map.get_mut(&entry.depth()) {
             Some(q) => q.push_back(node),
@@ -164,8 +151,6 @@ pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
                 cache_map.insert(entry.depth(), q);
             }
         }
-
-        println!("map: {:?}", cache_map);
     }
 
     Ok(cache_map.get_mut(&0).unwrap().pop_front().unwrap())
