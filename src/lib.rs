@@ -100,7 +100,24 @@ impl From<ContentError> for HashError {
 /// hashing, in order to ensure quirks of calling this function won't result in
 /// inconsistent results.
 pub fn hash_directories(paths: Vec<PathBuf>) -> Result<Vec<u8>, HashError> {
-    unimplemented!()
+    let mut paths = paths.clone();
+
+    paths.sort();
+
+    let mut hasher = Sha3_256::new();
+    let mut first = true;
+
+    for path in paths.iter() {
+        if !first {
+            hasher.update([NodeType::DirSeparator.to_u8()]);
+        } else {
+            first = false;
+        }
+        let hash = hash_directory(path.clone())?;
+        hasher.update(hash);
+    }
+
+    Ok(Vec::from(hasher.finalize().as_slice()))
 }
 
 /// Given a path to a directory, as a `PathBuf`, computes the directory hash and returns
