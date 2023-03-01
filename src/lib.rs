@@ -91,6 +91,18 @@ impl From<ContentError> for HashError {
     }
 }
 
+/// Given a list of directory paths, computes their directory hash and returns it as a
+/// byte array.
+///
+/// This function is equivalent to calling `hash_directory` on each directory in turn,
+/// concatenating all those hashes with the `NodeType::DirSeparator` byte, then hashing
+/// the result. The input does not have to be sorted, but will be sorted prior to
+/// hashing, in order to ensure quirks of calling this function won't result in
+/// inconsistent results.
+pub fn hash_directories(paths: Vec<PathBuf>) -> Result<Vec<u8>, HashError> {
+    unimplemented!()
+}
+
 /// Given a path to a directory, as a `PathBuf`, computes the directory hash and returns
 /// it as a byte array.
 ///
@@ -283,6 +295,22 @@ mod tests {
         assert_eq!(
             result[..],
             hex!("3b5e49ac9126759771d677bdacbc18a63ff94ad4e07718c18347254d7b9c6cb1")
+        )
+    }
+
+    #[test]
+    fn hash_test_data_all_via_directories() {
+        // one node:        9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d
+        // two node:        9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df
+        // collected node:  9fe82ef81c21f04ed6050b650fdef5c441fa49db43b2aaf7e383f7466778b026
+        let input = vec![
+            PathBuf::from("test_data/two"),
+            PathBuf::from("test_data/one"),
+        ];
+        let result = crate::hash_directories(input).unwrap();
+        assert_eq!(
+            result[..],
+            hex!("9fe82ef81c21f04ed6050b650fdef5c441fa49db43b2aaf7e383f7466778b026")
         )
     }
 }
