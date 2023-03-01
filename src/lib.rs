@@ -2,6 +2,7 @@ use sha3::{Digest, Sha3_256};
 use std::collections::{HashMap, VecDeque};
 use std::fmt;
 use std::fs;
+use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
 
 /// Defines the different types of nodes the directory walk can encounter. These types
@@ -90,7 +91,7 @@ impl From<ContentError> for HashError {
     }
 }
 
-/// Given a path to a directory, as a [`&str`], computes the directory hash and returns
+/// Given a path to a directory, as a `PathBuf`, computes the directory hash and returns
 /// it as a byte array.
 ///
 /// # Examples
@@ -118,7 +119,7 @@ impl From<ContentError> for HashError {
 /// Finally, for **symlinks**, the link isn't followed. Instead, the content hash is the
 /// hash of the path to the file the link points to.
 /// `hash(hash(name) + byte + hash(path))`
-pub fn hash_directory(path: &str) -> Result<Vec<u8>, HashError> {
+pub fn hash_directory(path: PathBuf) -> Result<Vec<u8>, HashError> {
     let mut cache_map: HashMap<usize, VecDeque<Vec<u8>>> = HashMap::new();
 
     for entry in WalkDir::new(&path).sort_by_file_name().contents_first(true) {
@@ -217,6 +218,8 @@ fn node_dir_hash(
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use crate::{Digest, Sha3_256};
     use hex_literal::hex;
     #[test]
@@ -237,7 +240,7 @@ mod tests {
         // one.test node:    7716a22d94ecef97998c296ec7914ee0f6bcd66d8b37ac82688b4a3a4ba0a0ca
         // one name:         6f70f27e13fc073a2541cd1e8b38ba9dbd5ec6de7bfeb24328534c417697381f
         // one node:         9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d
-        let result = crate::hash_directory("test_data/one").unwrap();
+        let result = crate::hash_directory(PathBuf::from("test_data/one")).unwrap();
         assert_eq!(
             result[..],
             hex!("9fd3dceb108e5f6067a623a592524a4014f5d7244e537891d147b51e8c1c147d")
@@ -263,7 +266,7 @@ mod tests {
         // subtwo node:      fa44844774f5f9e126e5a8d6b3c426b1f8b9af9abf7984371fae9ff4ef57e305
         // two name:         cad32d6da454536a0412369e78baf227a81309b9579df2f450d1b5f5c8c26bf0
         // two node:         9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df
-        let result = crate::hash_directory("test_data/two").unwrap();
+        let result = crate::hash_directory(PathBuf::from("test_data/two")).unwrap();
         assert_eq!(
             result[..],
             hex!("9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df")
@@ -276,7 +279,7 @@ mod tests {
         // two node:         9119ffd015d217097164f944331ee865fb6ac8c0b670728cf42c9e45c21ea0df
         // test_data name:   d9c66fed039088497293a5155e68c9722336edef5991a67fa285d9a2565582bf
         // test_data node:   3b5e49ac9126759771d677bdacbc18a63ff94ad4e07718c18347254d7b9c6cb1
-        let result = crate::hash_directory("test_data").unwrap();
+        let result = crate::hash_directory(PathBuf::from("test_data")).unwrap();
         assert_eq!(
             result[..],
             hex!("3b5e49ac9126759771d677bdacbc18a63ff94ad4e07718c18347254d7b9c6cb1")
